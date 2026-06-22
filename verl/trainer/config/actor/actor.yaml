@@ -57,7 +57,7 @@ policy_loss:
   # # Required when using verl.utils.omega_conf_to_dataclass to instantiate dataclass configs
   _target_: verl.workers.config.PolicyLossConfig
 
-  # Loss function mode: vanilla / clip-cov / kl-cov /gpg from https://arxiv.org/abs/2505.22617
+  # Loss function mode: vanilla / gspo / sapo / tbpo / clip-cov / kl-cov / gpg
   loss_mode: "vanilla"
 
   # Ratio of tokens to be clipped for clip-cov loss
@@ -74,6 +74,15 @@ policy_loss:
 
   # KL divergence penalty coefficient
   ppo_kl_coef: 0.1
+
+  # TBPO negative-sample lower trust-band ratio. If null, reuse actor.clip_ratio_low.
+  tbpo_neg_clip_ratio_low: null
+
+  # TBPO negative-sample upper trust-band ratio. If null, reuse actor.clip_ratio_high.
+  tbpo_neg_clip_ratio_high: null
+
+  # TBPO sequence-level mismatch cap for rollout_is_weights. If null, no extra TBPO cap is applied.
+  tbpo_mismatch_ratio_cap: null
 
 # Constant C in Dual-clip PPO; clips when advantage < 0 and ratio > C
 clip_ratio_c: 3.0

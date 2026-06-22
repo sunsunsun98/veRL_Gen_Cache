@@ -545,6 +545,8 @@ class AgentLoopWorker:
         # NOTE: __do_sample__ is an internal per-sample override used by REMAX combined rollout.
         # Do not forward it to concrete agent loops, which may reject unknown kwargs.
         per_sample_do_sample = batch.non_tensor_batch.get("__do_sample__")
+        per_request_max_new_tokens = batch.non_tensor_batch.get("per_request_max_new_tokens")
+        prefix_reuse_enabled = bool(batch.meta_info.get("prefix_reuse", False))
         tasks = []
         for i in range(len(batch)):
             trace_this_sample = i in traced_indices
@@ -552,6 +554,19 @@ class AgentLoopWorker:
             sample_sampling_params = dict(sampling_params)
             if not validate and per_sample_do_sample is not None and not bool(per_sample_do_sample[i]):
                 apply_greedy_sampling_params(sample_sampling_params)
+            if per_request_max_new_tokens is not None:
+                max_tokens = int(np.asarray(per_request_max_new_tokens[i]).item())
+                # vLLM validates max_tokens >= 1; full-reuse rows are filtered out before rollout.
+                sample_sampling_params["max_tokens"] = max(1, max_tokens)
+            if prefix_reuse_enabled:
+                # GenCacheManager has already built input_ids as
+                # original prompt + accepted cached response prefix. Pass those
+                # token ids to the concrete agent loop so vLLM continues from
+                # the verified prefix instead of re-tokenizing raw_prompt.
+                context_ids = batch.batch["input_ids"][i]
+                context_mask = batch.batch["attention_mask"][i].bool()
+                kwargs["prefix_reuse_prompt_ids"] = context_ids[context_mask].detach().cpu().tolist()
+                kwargs["prefix_reuse_prompt_width"] = int(batch.batch["input_ids"].shape[1])
             tasks.append(
                 asyncio.create_task(
                     self._run_agent_loop(sample_sampling_params, trajectory_info[i], trace=trace_this_sample, **kwargs)
@@ -647,9 +662,11 @@ class AgentLoopWorker:
         #   e.g., [0,0,0,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,0,0,0,0]
 
         # TODO(wuxibin): remove padding and use tensordict.
+        prompt_max_length = int(kwargs.get("prefix_reuse_prompt_width", self.rollout_config.prompt_length))
+        prompt_max_length = max(prompt_max_length, len(output.prompt_ids))
         prompt_output = self._pad_token_ids(
             output.prompt_ids,
-            max_length=self.rollout_config.prompt_length,
+            max_length=prompt_max_length,
             padding_side="left",
             return_attention_mask=True,
         )

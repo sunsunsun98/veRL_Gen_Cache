@@ -37,6 +37,7 @@ class SingleTurnAgentLoop(AgentLoopBase):
     @rollout_trace_op
     async def run(self, sampling_params: dict[str, Any], **kwargs) -> AgentLoopOutput:
         messages = list(kwargs["raw_prompt"])
+        prefix_reuse_prompt_ids = kwargs.get("prefix_reuse_prompt_ids")
 
         # 1. extract multimodal inputs from messages
         multi_modal_data = await self.process_multi_modal_info(messages)
@@ -46,13 +47,19 @@ class SingleTurnAgentLoop(AgentLoopBase):
         mm_processor_kwargs = self._get_mm_processor_kwargs(audios)
 
         # 2. apply chat template and tokenize
-        prompt_ids = await self.apply_chat_template(
-            messages,
-            images=images,
-            videos=videos,
-            audios=audios,
-            mm_processor_kwargs=mm_processor_kwargs,
-        )
+        if prefix_reuse_prompt_ids is None:
+            prompt_ids = await self.apply_chat_template(
+                messages,
+                images=images,
+                videos=videos,
+                audios=audios,
+                mm_processor_kwargs=mm_processor_kwargs,
+            )
+        else:
+            # Prefix reuse already provides token ids for
+            # prompt + accepted cached response prefix. Keep multimodal payloads
+            # from raw_prompt, but do not re-template the text prompt.
+            prompt_ids = [int(token_id) for token_id in prefix_reuse_prompt_ids]
 
         # 3. generate sequences
         metrics = {}

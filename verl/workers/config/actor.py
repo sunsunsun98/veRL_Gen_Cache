@@ -81,12 +81,16 @@ class PolicyLossConfig(BaseConfig):
     The inheritance from BaseConfig provides omegaconf.DictConfig-like interface for a dataclass config.
 
     Args:
-        loss_mode (str): Loss function mode. Options: 'vanilla', 'clip-cov', 'kl-cov', 'gpg'.
+        loss_mode (str): Loss function mode. Options: 'vanilla', 'gspo', 'sapo', 'tbpo', 'clip-cov',
+            'kl-cov', 'gpg'.
         clip_cov_ratio (float): Ratio of tokens to be clipped for clip-cov loss.
         clip_cov_lb (float): Lower bound for clip-cov loss.
         clip_cov_ub (float): Upper bound for clip-cov loss.
         kl_cov_ratio (float): Ratio of tokens to be applied KL penalty for kl-cov loss.
         ppo_kl_coef (float): KL divergence penalty coefficient.
+        tbpo_neg_clip_ratio_low (Optional[float]): Lower trust-band ratio for negative TBPO samples.
+        tbpo_neg_clip_ratio_high (Optional[float]): Upper trust-band ratio for negative TBPO samples.
+        tbpo_mismatch_ratio_cap (Optional[float]): Two-sided cap for sequence-level rollout mismatch weights.
         rollout_correction (RolloutCorrectionConfig): Configuration for rollout correction.
     """
 
@@ -96,6 +100,9 @@ class PolicyLossConfig(BaseConfig):
     clip_cov_ub: float = 5.0
     kl_cov_ratio: float = 0.0002
     ppo_kl_coef: float = 0.1
+    tbpo_neg_clip_ratio_low: Optional[float] = None
+    tbpo_neg_clip_ratio_high: Optional[float] = None
+    tbpo_mismatch_ratio_cap: Optional[float] = None
     rollout_correction: RolloutCorrectionConfig = field(default_factory=RolloutCorrectionConfig)
 
 

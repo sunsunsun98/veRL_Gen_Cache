@@ -1611,6 +1611,104 @@ def compute_policy_loss_gspo(
     return pg_loss, pg_metrics
 
 
+@register_policy_loss("tbpo")
+def compute_policy_loss_tbpo(
+    old_log_prob: torch.Tensor,
+    log_prob: torch.Tensor,
+    advantages: torch.Tensor,
+    response_mask: torch.Tensor,
+    loss_agg_mode: str = "seq-mean-token-mean",
+    config: Optional[ActorConfig] = None,
+    rollout_is_weights: torch.Tensor | None = None,
+) -> tuple[torch.Tensor, dict[str, Any]]:
+    """
+    Compute the sequence-level Trust-Band Policy Optimization loss.
+
+    TBPO treats each response as one action by using the geometric mean of
+    token-level probability ratios. Positive-advantage responses use the
+    standard one-sided upper trust band, while negative-advantage responses
+    use a dual-sided band to prevent low-probability error tokens from
+    dominating the update.
+    """
+
+    assert config is not None
+    assert isinstance(config, ActorConfig)
+
+    clip_ratio_low = config.clip_ratio_low if config.clip_ratio_low is not None else config.clip_ratio
+    clip_ratio_high = config.clip_ratio_high if config.clip_ratio_high is not None else config.clip_ratio
+    neg_clip_ratio_low = config.policy_loss.get("tbpo_neg_clip_ratio_low", None)
+    neg_clip_ratio_high = config.policy_loss.get("tbpo_neg_clip_ratio_high", None)
+    mismatch_ratio_cap = config.policy_loss.get("tbpo_mismatch_ratio_cap", None)
+
+    if neg_clip_ratio_low is None:
+        neg_clip_ratio_low = clip_ratio_low
+    if neg_clip_ratio_high is None:
+        neg_clip_ratio_high = clip_ratio_high
+    if mismatch_ratio_cap is not None and mismatch_ratio_cap <= 1.0:
+        raise ValueError(f"tbpo_mismatch_ratio_cap must be greater than 1.0, got {mismatch_ratio_cap}.")
+
+    response_mask = response_mask.to(log_prob.dtype)
+    raw_seq_lengths = response_mask.sum(dim=-1)
+    seq_mask = (raw_seq_lengths > 0).to(log_prob.dtype)
+    seq_lengths = raw_seq_lengths.clamp(min=1.0)
+
+    negative_approx_kl = log_prob - old_log_prob
+    ppo_kl = verl_F.masked_mean(-negative_approx_kl, response_mask)
+
+    # Sequence-level ratio, i.e. exp(mean_t(log pi_theta - log pi_old)).
+    seq_log_ratio = (negative_approx_kl * response_mask).sum(dim=-1) / seq_lengths
+    seq_ratio = torch.exp(torch.clamp(seq_log_ratio, min=-20.0, max=20.0))
+
+    # GRPO-style advantages are usually constant per response; averaging keeps
+    # TBPO compatible with token-shaped advantage tensors.
+    seq_advantages = (advantages * response_mask).sum(dim=-1) / seq_lengths
+    positive_advantage = seq_advantages >= 0
+
+    pos_clipped_ratio = torch.clamp(seq_ratio, max=1.0 + clip_ratio_high)
+    neg_clipped_ratio = torch.clamp(seq_ratio, min=1.0 - neg_clip_ratio_low, max=1.0 + neg_clip_ratio_high)
+    clipped_seq_ratio = torch.where(positive_advantage, pos_clipped_ratio, neg_clipped_ratio)
+
+    if rollout_is_weights is None:
+        seq_mismatch_weight = torch.ones_like(clipped_seq_ratio)
+    else:
+        rollout_is_weights = rollout_is_weights.to(dtype=log_prob.dtype)
+        seq_log_mismatch = (torch.log(rollout_is_weights.clamp_min(1e-10)) * response_mask).sum(dim=-1) / seq_lengths
+        if mismatch_ratio_cap is not None:
+            log_cap = torch.log(torch.as_tensor(mismatch_ratio_cap, dtype=log_prob.dtype, device=log_prob.device))
+            seq_log_mismatch = torch.clamp(seq_log_mismatch, min=-log_cap, max=log_cap)
+        seq_mismatch_weight = torch.exp(torch.clamp(seq_log_mismatch, min=-20.0, max=20.0)).detach()
+
+    seq_losses = -seq_mismatch_weight * clipped_seq_ratio * seq_advantages
+    pg_losses = seq_losses.unsqueeze(-1).expand_as(log_prob)
+
+    pg_loss = agg_loss(
+        loss_mat=pg_losses,
+        loss_mask=response_mask,
+        loss_agg_mode="seq-mean-token-mean",
+        **config.global_batch_info,
+    )
+
+    pos_clipped = positive_advantage & (seq_ratio > 1.0 + clip_ratio_high)
+    neg_lower_clipped = (~positive_advantage) & (seq_ratio < 1.0 - neg_clip_ratio_low)
+    neg_upper_clipped = (~positive_advantage) & (seq_ratio > 1.0 + neg_clip_ratio_high)
+    clipped = pos_clipped | neg_lower_clipped | neg_upper_clipped
+
+    seq_count = seq_mask.sum().clamp(min=1.0)
+    pg_clipfrac = (clipped.to(log_prob.dtype) * seq_mask).sum() / seq_count
+    pg_clipfrac_lower = (neg_lower_clipped.to(log_prob.dtype) * seq_mask).sum() / seq_count
+    pg_clipfrac_upper = ((pos_clipped | neg_upper_clipped).to(log_prob.dtype) * seq_mask).sum() / seq_count
+    mismatch_mean = (seq_mismatch_weight * seq_mask).sum() / seq_count
+
+    pg_metrics = {
+        "actor/pg_clipfrac": pg_clipfrac.detach().item(),
+        "actor/ppo_kl": ppo_kl.detach().item(),
+        "actor/pg_clipfrac_lower": pg_clipfrac_lower.detach().item(),
+        "actor/tbpo_pg_clipfrac_upper": pg_clipfrac_upper.detach().item(),
+        "actor/tbpo_mismatch_weight_mean": mismatch_mean.detach().item(),
+    }
+    return pg_loss, pg_metrics
+
+
 @register_policy_loss("sapo")
 def compute_policy_loss_sapo(
     old_log_prob: torch.Tensor,

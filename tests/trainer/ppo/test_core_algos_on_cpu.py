@@ -24,16 +24,79 @@ from verl.trainer.ppo.core_algos import (
     compute_gae_advantage_return,
     compute_grpo_outcome_advantage,
     compute_grpo_vectorized_outcome_advantage,
+    compute_policy_loss_tbpo,
     compute_rloo_outcome_advantage,
     compute_rloo_vectorized_outcome_advantage,
     get_adv_estimator_fn,
     kl_penalty,
     register_adv_est,
 )
+from verl.workers.config.actor import ActorConfig
 
 
 def mock_test_fn():
     pass
+
+
+def test_compute_policy_loss_tbpo_sequence_trust_band():
+    config = ActorConfig(
+        strategy="fsdp",
+        rollout_n=1,
+        ppo_micro_batch_size=1,
+        clip_ratio=0.2,
+        clip_ratio_low=0.2,
+        clip_ratio_high=0.2,
+    )
+    config.policy_loss.tbpo_neg_clip_ratio_high = 0.1
+
+    old_log_prob = torch.zeros(3, 2)
+    log_prob = torch.log(torch.tensor([[1.5, 1.5], [1.5, 1.5], [0.7, 0.7]]))
+    advantages = torch.tensor([[1.0, 1.0], [-1.0, -1.0], [-1.0, -1.0]])
+    response_mask = torch.ones(3, 2)
+
+    pg_loss, metrics = compute_policy_loss_tbpo(
+        old_log_prob=old_log_prob,
+        log_prob=log_prob,
+        advantages=advantages,
+        response_mask=response_mask,
+        loss_agg_mode="seq-mean-token-mean",
+        config=config,
+    )
+
+    expected = torch.tensor((-1.2 + 1.1 + 0.8) / 3)
+    assert torch.allclose(pg_loss, expected, atol=1e-6)
+    assert metrics["actor/pg_clipfrac"] == pytest.approx(1.0)
+    assert metrics["actor/pg_clipfrac_lower"] == pytest.approx(1 / 3)
+    assert metrics["actor/tbpo_pg_clipfrac_upper"] == pytest.approx(2 / 3)
+
+
+def test_compute_policy_loss_tbpo_sequence_mismatch_cap():
+    config = ActorConfig(
+        strategy="fsdp",
+        rollout_n=1,
+        ppo_micro_batch_size=1,
+        clip_ratio=0.2,
+    )
+    config.policy_loss.tbpo_mismatch_ratio_cap = 2.0
+
+    old_log_prob = torch.zeros(2, 2)
+    log_prob = torch.zeros(2, 2)
+    advantages = torch.ones(2, 2)
+    response_mask = torch.ones(2, 2)
+    rollout_is_weights = torch.tensor([[4.0, 4.0], [0.25, 0.25]])
+
+    pg_loss, metrics = compute_policy_loss_tbpo(
+        old_log_prob=old_log_prob,
+        log_prob=log_prob,
+        advantages=advantages,
+        response_mask=response_mask,
+        loss_agg_mode="seq-mean-token-mean",
+        config=config,
+        rollout_is_weights=rollout_is_weights,
+    )
+
+    assert torch.allclose(pg_loss, torch.tensor(-1.25), atol=1e-6)
+    assert metrics["actor/tbpo_mismatch_weight_mean"] == pytest.approx(1.25)
 
 
 class TestRegisterAdvEst(unittest.TestCase):
