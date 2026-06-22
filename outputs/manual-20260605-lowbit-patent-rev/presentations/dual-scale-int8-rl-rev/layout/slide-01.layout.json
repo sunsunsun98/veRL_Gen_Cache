@@ -1,0 +1,543 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/2x4nap4r",
+    "id": "2x4nap4r",
+    "slide": 2,
+    "layoutId": "/ppt/slideLayouts/slideLayout1.xml",
+    "layoutName": "标题幻灯片",
+    "layoutType": "title",
+    "masterLayoutId": "/ppt/slideMasters/slideMaster1.xml",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "自定义设计方案 1",
+    "colors": {
+      "accent1": "#BBE0E3",
+      "accent2": "#333399",
+      "accent3": "#FFFFFF",
+      "accent4": "#000000",
+      "accent5": "#DAEDEF",
+      "accent6": "#2D2D8A",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#000000",
+      "lt2": "#808080",
+      "hlink": "#009999",
+      "folHlink": "#99CC00"
+    },
+    "fontScheme": {
+      "name": "自定义设计方案",
+      "majorFont": {
+        "latinTypeface": "Arial",
+        "eastAsianTypeface": "宋体"
+      },
+      "minorFont": {
+        "latinTypeface": "Arial",
+        "eastAsianTypeface": "宋体"
+      }
+    },
+    "typefaces": [
+      "Arial",
+      "FrutigerNext LT Bold",
+      "FrutigerNext LT Regular",
+      "微软雅黑"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "/ppt/slideLayouts/slideLayout1.xml",
+      "name": "标题幻灯片",
+      "type": "title",
+      "parentLayoutId": "/ppt/slideMasters/slideMaster1.xml",
+      "elements": [
+        {
+          "order": 1,
+          "kind": "image",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/5",
+          "id": "5",
+          "name": "Picture 3",
+          "bbox": [
+            0.17,
+            82.33,
+            1279.83,
+            400
+          ],
+          "contentType": "image/png",
+          "imageCrop": {
+            "left": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0
+          },
+          "asset": {
+            "assetId": "/ppt/media/image3.png",
+            "contentType": "image/png",
+            "byteLength": 13202
+          },
+          "fillImage": {
+            "assetId": "/ppt/media/image3.png",
+            "contentType": "image/png",
+            "byteLength": 13202
+          }
+        },
+        {
+          "order": 2,
+          "kind": "shape",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/3",
+          "id": "3",
+          "name": "Text Box 5",
+          "bbox": [
+            91.33,
+            651.5,
+            256.5,
+            27.67
+          ],
+          "geometry": "rect",
+          "text": "HUAWEI TECHNOLOGIES CO., LTD.",
+          "textPreview": "HUAWEI TECHNOLOGIES CO., LTD.",
+          "resolvedTextStyle": {
+            "wrap": "none",
+            "autoFit": "resizeShapeToFitText",
+            "insets": {
+              "top": 4.11,
+              "right": 8.22,
+              "bottom": 4.11,
+              "left": 8.22
+            }
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "HUAWEI TECHNOLOGIES CO., LTD.",
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "HUAWEI TECHNOLOGIES CO., LTD.",
+                  "fontSize": 16,
+                  "typeface": "FrutigerNext LT Bold"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "order": 3,
+          "kind": "shape",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/4",
+          "id": "4",
+          "name": "Text Box 6",
+          "bbox": [
+            1014.5,
+            418.33,
+            210.33,
+            34.17
+          ],
+          "geometry": "rect",
+          "text": "www.huawei.com",
+          "textPreview": "www.huawei.com",
+          "resolvedTextStyle": {
+            "insets": {
+              "top": 4.8,
+              "right": 9.59,
+              "bottom": 4.8,
+              "left": 9.59
+            }
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "www.huawei.com",
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "www.huawei.com",
+                  "fontSize": 24
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "order": 4,
+          "kind": "image",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/6",
+          "id": "6",
+          "name": "图片 12",
+          "bbox": [
+            1033.17,
+            571.67,
+            159.5,
+            119.67
+          ],
+          "contentType": "image/png",
+          "imageCrop": {
+            "left": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0
+          },
+          "asset": {
+            "assetId": "/ppt/media/image4.png",
+            "contentType": "image/png",
+            "byteLength": 25963
+          },
+          "fillImage": {
+            "assetId": "/ppt/media/image4.png",
+            "contentType": "image/png",
+            "byteLength": 25963
+          }
+        }
+      ]
+    },
+    {
+      "scope": "master",
+      "id": "/ppt/slideMasters/slideMaster1.xml",
+      "type": "master",
+      "backgroundColor": "bg1",
+      "elements": [
+        {
+          "order": 1,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/1026",
+          "id": "1026",
+          "name": "Rectangle 2",
+          "bbox": [
+            87.17,
+            12.17,
+            1128.83,
+            66.5
+          ],
+          "geometry": "rect",
+          "text": "单击此处编辑母版标题样式",
+          "textPreview": "单击此处编辑母版标题样式",
+          "resolvedTextStyle": {
+            "anchor": 2,
+            "vertical": 1,
+            "verticalAlignment": "middle",
+            "wrap": "square",
+            "insets": {
+              "top": 4.11,
+              "right": 8.22,
+              "bottom": 4.11,
+              "left": 8.22
+            }
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "单击此处编辑母版标题样式",
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "单击此处编辑母版标题样式"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/1027",
+          "id": "1027",
+          "name": "Rectangle 3",
+          "bbox": [
+            45.33,
+            95.33,
+            1189.33,
+            547.83
+          ],
+          "geometry": "rect",
+          "text": "单击此处编辑母版文本样式\n第二级\n第三级\n第四级\n第五级",
+          "textPreview": "单击此处编辑母版文本样式 | 第二级 | 第三级 | 第四级 | 第五级",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "vertical": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "insets": {
+              "top": 4.11,
+              "right": 8.22,
+              "bottom": 4.11,
+              "left": 8.22
+            }
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "单击此处编辑母版文本样式",
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "单击此处编辑母版文本样式"
+                }
+              ]
+            },
+            {
+              "index": 2,
+              "text": "第二级",
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "第二级"
+                }
+              ]
+            },
+            {
+              "index": 3,
+              "text": "第三级",
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "第三级"
+                }
+              ]
+            },
+            {
+              "index": 4,
+              "text": "第四级",
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "第四级"
+                }
+              ]
+            },
+            {
+              "index": 5,
+              "text": "第五级",
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "第五级"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "order": 3,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/13318",
+          "id": "13318",
+          "name": "Rectangle 6",
+          "bbox": [
+            830,
+            672,
+            148,
+            115.67
+          ],
+          "geometry": "rect",
+          "text": "\nPage ‹#›",
+          "textPreview": "| Page ‹#›",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "vertical": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "insets": {
+              "top": 0,
+              "right": 0,
+              "bottom": 0,
+              "left": 0
+            }
+          },
+          "paragraphs": [
+            {
+              "index": 2,
+              "text": "Page ‹#›",
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Page "
+                },
+                {
+                  "index": 2,
+                  "text": "‹#›"
+                }
+              ]
+            }
+          ],
+          "lineWidth": 1
+        }
+      ]
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/6tovahoz",
+      "id": "5122",
+      "name": "Rectangle 4",
+      "bbox": [
+        834,
+        34.33,
+        226.83,
+        32.5
+      ],
+      "geometry": "rect",
+      "text": "Security Level：Internal ",
+      "textPreview": "Security Level：Internal",
+      "resolvedFontSize": 21.33,
+      "resolvedTextStyle": {
+        "fontSize": 21.33,
+        "typeface": "Arial",
+        "color": "tx1",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "none",
+        "autoFit": "resizeShapeToFitText",
+        "insets": {
+          "top": 4.11,
+          "right": 8.22,
+          "bottom": 4.11,
+          "left": 8.22
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Security Level：Internal"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Security Level：Internal ",
+          "lineSpacingPercent": 100000,
+          "runs": [
+            {
+              "index": 1,
+              "text": "Security Level",
+              "fontSize": 20,
+              "typeface": "FrutigerNext LT Regular",
+              "color": "#666666"
+            },
+            {
+              "index": 2,
+              "text": "：",
+              "fontSize": 20,
+              "typeface": "FrutigerNext LT Regular",
+              "color": "#666666"
+            },
+            {
+              "index": 3,
+              "text": "Internal ",
+              "fontSize": 20,
+              "typeface": "FrutigerNext LT Regular",
+              "color": "#666666"
+            }
+          ],
+          "bulletCharacter": "n",
+          "marginLeft": 0
+        }
+      ]
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/onyd0z61",
+      "id": "5124",
+      "name": "Rectangle 6",
+      "bbox": [
+        42.77,
+        219.91,
+        1005.47,
+        189.7
+      ],
+      "geometry": "rect",
+      "text": "一种基于双尺度协同感知量化的INT8 RL训推优化方法\n\n推理架构项目组\n",
+      "textPreview": "一种基于双尺度协同感知量化的INT8 RL训推优化方法 |  | 推理架构项目组 |",
+      "resolvedFontSize": 21.33,
+      "resolvedTextStyle": {
+        "fontSize": 21.33,
+        "typeface": "Arial",
+        "color": "tx1",
+        "bold": true,
+        "alignment": "left",
+        "wrap": "square",
+        "autoFit": "resizeShapeToFitText",
+        "insets": {
+          "top": 4.33,
+          "right": 8.66,
+          "bottom": 4.33,
+          "left": 8.66
+        }
+      },
+      "textLayout": {
+        "lineCount": 4,
+        "lines": [
+          {
+            "index": 1,
+            "text": "一种基于双尺度协同感知量化的INT8 RL训推优化方法"
+          },
+          {
+            "index": 2,
+            "text": ""
+          },
+          {
+            "index": 3,
+            "text": "推理架构项目组"
+          },
+          {
+            "index": 4,
+            "text": ""
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "一种基于双尺度协同感知量化的INT8 RL训推优化方法",
+          "lineSpacingPercent": 100000,
+          "runs": [
+            {
+              "index": 1,
+              "text": "一种基于双尺度协同感知量化的INT8 RL训推优化方法",
+              "fontSize": 37.33
+            }
+          ],
+          "bulletCharacter": "n",
+          "marginLeft": 0
+        },
+        {
+          "index": 3,
+          "text": "推理架构项目组",
+          "lineSpacingPercent": 100000,
+          "runs": [
+            {
+              "index": 1,
+              "text": "推理架构项目组",
+              "fontSize": 37.33,
+              "typeface": "微软雅黑"
+            }
+          ],
+          "bulletCharacter": "n",
+          "marginLeft": 0
+        }
+      ]
+    }
+  ],
+  "composeRuns": []
+}

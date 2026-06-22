@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "gpt-researcher": {
+      "source": "assafelovic/gpt-researcher",
+      "sourceType": "github",
+      "skillPath": ".claude/SKILL.md",
+      "computedHash": "ff95eb1c33a5138f756ee878b94865ca92bfef75be409ba60f6070ddecc4d109"
+    }
+  }
+}

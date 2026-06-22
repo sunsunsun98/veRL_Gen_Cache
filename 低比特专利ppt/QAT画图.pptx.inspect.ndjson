@@ -1,0 +1,90 @@
+{"kind":"deck","id":"pr/1btfii","name":"Deck"}
+{"kind":"layout","layoutId":"/ppt/slideMasters/slideMaster1.xml","name":"","type":"master","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式 | 二级 | 三级 | 四级 | 五级"},{"name":"dateTime","type":"dateTime","textPreview":"2026/6/15"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout1.xml","name":"标题幻灯片","type":"title","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"subtitle","type":"subtitle","textPreview":"单击此处编辑母版副标题样式"},{"name":"dateTime","type":"dateTime","textPreview":"2026/6/15"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout2.xml","name":"标题和内容","type":"obj","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"2","textPreview":"单击此处编辑母版文本样式 | 二级 | 三级 | 四级 | 五级"},{"name":"dateTime","type":"dateTime","textPreview":"2026/6/15"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout3.xml","name":"节标题","type":"secHead","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式"},{"name":"dateTime","type":"dateTime","textPreview":"2026/6/15"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout4.xml","name":"两栏内容","type":"twoObj","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"2","textPreview":"单击此处编辑母版文本样式 | 二级 | 三级 | 四级 | 五级"},{"name":"3","textPreview":"单击此处编辑母版文本样式 | 二级 | 三级 | 四级 | 五级"},{"name":"dateTime","type":"dateTime","textPreview":"2026/6/15"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout5.xml","name":"比较","type":"twoTxTwoObj","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式"},{"name":"3","textPreview":"单击此处编辑母版文本样式 | 二级 | 三级 | 四级 | 五级"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式"},{"name":"5","textPreview":"单击此处编辑母版文本样式 | 二级 | 三级 | 四级 | 五级"},{"name":"dateTime","type":"dateTime","textPreview":"2026/6/15"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout6.xml","name":"仅标题","type":"titleOnly","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"dateTime","type":"dateTime","textPreview":"2026/6/15"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout7.xml","name":"空白","type":"blank","placeholders":[{"name":"dateTime","type":"dateTime","textPreview":"2026/6/15"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout8.xml","name":"内容与标题","type":"objTx","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"2","textPreview":"单击此处编辑母版文本样式 | 二级 | 三级 | 四级 | 五级"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式"},{"name":"dateTime","type":"dateTime","textPreview":"2026/6/15"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout9.xml","name":"图片与标题","type":"picTx","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"picture","type":"picture"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式"},{"name":"dateTime","type":"dateTime","textPreview":"2026/6/15"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout10.xml","name":"标题和竖排文字","type":"vertTx","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式 | 二级 | 三级 | 四级 | 五级"},{"name":"dateTime","type":"dateTime","textPreview":"2026/6/15"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout11.xml","name":"竖排标题与文本","type":"vertTitleAndTx","placeholders":[{"name":"title","type":"title","textPreview":"单击此处编辑母版标题样式"},{"name":"body","type":"body","textPreview":"单击此处编辑母版文本样式 | 二级 | 三级 | 四级 | 五级"},{"name":"dateTime","type":"dateTime","textPreview":"2026/6/15"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"slide","id":"sl/2x4nap4r","slide":1,"title":"……","textShapes":41}
+{"kind":"shape","id":"sh/udg7adsj","slide":1,"name":"矩形 3","bbox":[298.44,127.83,692.85,221.74]}
+{"kind":"textbox","id":"sh/u9knih4b","slide":1,"name":"文本框 7","text":"……","textPreview":"……","textChars":2,"textLines":1,"bbox":[141.91,159.13,58.77,38.78]}
+{"kind":"textbox","id":"sh/54zidony","slide":1,"name":"文本框 11","text":"……","textPreview":"……","textChars":2,"textLines":1,"bbox":[145.22,278.01,58.77,38.78]}
+{"kind":"textbox","id":"sh/cj6tovah","slide":1,"name":"文本框 12","text":"x","textPreview":"x","textChars":1,"textLines":1,"bbox":[128.43,112.08,87.47,29.08]}
+{"kind":"textbox","id":"sh/nap4r65w","slide":1,"name":"文本框 13","text":"W","textPreview":"W","textChars":1,"textLines":1,"bbox":[116.57,233.9,111.18,29.08]}
+{"kind":"shape","id":"sh/7u54zido","slide":1,"name":"直接箭头连接符 14","bbox":[269.78,173.8,33.46,0]}
+{"kind":"shape","id":"sh/ed8bat47","slide":1,"name":"直接箭头连接符 15","bbox":[269.05,296.53,33.46,0]}
+{"kind":"textbox","id":"sh/cvixczed","slide":1,"name":"文本框 16","text":"bf16","textPreview":"bf16","textChars":4,"textLines":1,"bbox":[103.18,110.5,74.63,27.47]}
+{"kind":"textbox","id":"sh/jm1cfa9w","slide":1,"name":"文本框 17","text":"bf16","textPreview":"bf16","textChars":4,"textLines":1,"bbox":[104.5,231.47,74.63,27.47]}
+{"kind":"textbox","id":"sh/25kb6xkf","slide":1,"name":"文本框 19","text":"learnable\nsmooth scale","textPreview":"learnable | smooth scale","textChars":22,"textLines":2,"bbox":[179.62,87.41,144.26,48.47]}
+{"kind":"textbox","id":"sh/kb6xkf6d","slide":1,"name":"文本框 21","text":"÷","textPreview":"÷","textChars":1,"textLines":1,"bbox":[206.22,159.65,44.61,32.31]}
+{"kind":"textbox","id":"sh/9w3m94fu","slide":1,"name":"文本框 22","text":"×","textPreview":"×","textChars":1,"textLines":1,"bbox":[205.23,280.37,44.61,32.31]}
+{"kind":"textbox","id":"sh/2t83itgf","slide":1,"name":"矩形: 圆角 23","text":"量化映射\nx / scale + zp","textPreview":"量化映射 | x / scale + zp","textChars":19,"textLines":2,"bbox":[305.48,149.4,196.13,54.05]}
+{"kind":"shape","id":"sh/b6xkf6dc","slide":1,"name":"直接箭头连接符 24","bbox":[721.92,176,40.58,0]}
+{"kind":"textbox","id":"sh/kzupwb2h","slide":1,"name":"矩形: 圆角 25","text":"舍入 & 截断\nClamp(xint, qmin, qmax)","textPreview":"舍入 & 截断 | Clamp(xint, qmin, qmax)","textChars":31,"textLines":2,"bbox":[532.32,148.97,189.6,54.05]}
+{"kind":"shape","id":"sh/tcj6tova","slide":1,"name":"直接箭头连接符 26","bbox":[501.6,176,30.72,0]}
+{"kind":"textbox","id":"sh/2p8nqxs7","slide":1,"name":"矩形: 圆角 27","text":"反量化映射\n(xint – zp) * scale","textPreview":"反量化映射 | (xint – zp) * scale","textChars":25,"textLines":2,"bbox":[762.5,148.97,219.97,54.05]}
+{"kind":"textbox","id":"sh/ra5gbq1o","slide":1,"name":"矩形: 圆角 28","text":"BF16","textPreview":"BF16","textChars":4,"textLines":1,"bbox":[1023.05,158.29,64.51,35.42]}
+{"kind":"textbox","id":"sh/xs72x4na","slide":1,"name":"文本框 29","text":"IN","textPreview":"IN","textChars":2,"textLines":1,"bbox":[253.63,145.4,64.31,27.47]}
+{"kind":"shape","id":"sh/t47y1kre","slide":1,"name":"直接箭头连接符 30","bbox":[982.47,176,40.58,0]}
+{"kind":"textbox","id":"sh/fmlkjm1c","slide":1,"name":"文本框 31","text":"int 8","textPreview":"int 8","textChars":5,"textLines":1,"bbox":[600.84,125.49,64.31,27.47]}
+{"kind":"textbox","id":"sh/q1orytsv","slide":1,"name":"矩形: 圆角 32","text":"量化映射\nW / weight scale + zp","textPreview":"量化映射 | W / weight scale + zp","textChars":26,"textLines":2,"bbox":[303.72,270.84,196.13,54.05]}
+{"kind":"shape","id":"sh/i9s36hcr","slide":1,"name":"直接箭头连接符 33","bbox":[720.16,297.45,40.58,0]}
+{"kind":"textbox","id":"sh/8z25kb6x","slide":1,"name":"矩形: 圆角 34","text":"舍入 & 截断\nClamp(xint, qmin, qmax)","textPreview":"舍入 & 截断 | Clamp(xint, qmin, qmax)","textChars":31,"textLines":2,"bbox":[530.56,270.42,189.6,54.05]}
+{"kind":"shape","id":"sh/loj2t83i","slide":1,"name":"直接箭头连接符 35","bbox":[499.84,297.45,30.72,0]}
+{"kind":"textbox","id":"sh/qtcj6tov","slide":1,"name":"矩形: 圆角 36","text":"反量化映射\n(Wint - zp) * weight scale","textPreview":"反量化映射 | (Wint - zp) * weight scale","textChars":32,"textLines":2,"bbox":[760.74,270.42,219.97,54.05]}
+{"kind":"textbox","id":"sh/xczed8v6","slide":1,"name":"矩形: 圆角 37","text":"BF16","textPreview":"BF16","textChars":4,"textLines":1,"bbox":[1021.29,279.73,64.51,35.42]}
+{"kind":"textbox","id":"sh/8v6psfil","slide":1,"name":"文本框 38","text":"IN","textPreview":"IN","textChars":2,"textLines":1,"bbox":[251.87,266.84,64.31,27.47]}
+{"kind":"textbox","id":"sh/w3m94fu1","slide":1,"name":"文本框 39","text":"OUT","textPreview":"OUT","textChars":3,"textLines":1,"bbox":[970.6,271.32,64.31,27.47]}
+{"kind":"shape","id":"sh/e9cvixcz","slide":1,"name":"直接箭头连接符 40","bbox":[980.71,297.45,40.58,0]}
+{"kind":"textbox","id":"sh/ex0nuxc3","slide":1,"name":"文本框 41","text":"(learnable)","textPreview":"(learnable)","textChars":11,"textLines":1,"bbox":[343.07,322.3,107.02,29.08]}
+{"kind":"textbox","id":"sh/3itgfmlk","slide":1,"name":"文本框 42","text":"(learnable)","textPreview":"(learnable)","textChars":11,"textLines":1,"bbox":[864.53,322.19,107.02,29.08]}
+{"kind":"textbox","id":"sh/wb2hwfyx","slide":1,"name":"文本框 43","text":"int 8","textPreview":"int 8","textChars":5,"textLines":1,"bbox":[599.08,247.55,64.31,27.47]}
+{"kind":"textbox","id":"sh/lwval87e","slide":1,"name":"矩形: 圆角 44","text":"平滑感知QAT伪量化过程","textPreview":"平滑感知QAT伪量化过程","textChars":12,"textLines":1,"bbox":[312.59,97.1,166.23,30.73]}
+{"kind":"textbox","id":"sh/e9cvixcz","slide":1,"name":"文本框 45","text":"OUT","textPreview":"OUT","textChars":3,"textLines":1,"bbox":[970.6,148.61,64.31,27.47]}
+{"kind":"shape","id":"sh/7u54zido","slide":1,"name":"直接箭头连接符 46","bbox":[1053.55,247.3,1.24,32.44]}
+{"kind":"shape","id":"sh/ed8bat47","slide":1,"name":"直接箭头连接符 47","bbox":[1053.99,193.71,1.32,29.46]}
+{"kind":"shape","id":"sh/lc7u54zi","slide":1,"name":"直接箭头连接符 48","bbox":[1065.59,235.04,52.74,0]}
+{"kind":"textbox","id":"sh/0rqd4vmt","slide":1,"name":"文本框 52","text":"……","textPreview":"……","textChars":2,"textLines":1,"bbox":[1144.01,221.61,58.77,38.78]}
+{"kind":"textbox","id":"sh/byhgn29g","slide":1,"name":"文本框 53","text":"y_q ","textPreview":"y_q","textChars":4,"textLines":1,"bbox":[1130.72,171.33,87.47,29.08]}
+{"kind":"shape","id":"sh/idonyd0z","slide":1,"name":"流程图: 汇总连接 54","bbox":[1042.39,223.17,23.2,23.72]}
+{"kind":"textbox","id":"sh/t47y1kre","slide":1,"name":"文本框 55","text":"bf16","textPreview":"bf16","textChars":4,"textLines":1,"bbox":[1068.8,207.5,74.63,27.47]}
+{"kind":"shape","id":"sh/a9w3m94f","slide":1,"name":"activation-smooth-branch-outline","bbox":[92,78,1018,145]}
+{"kind":"shape","id":"sh/zupwb2hw","slide":1,"name":"weight-scale-branch-outline","bbox":[92,232,1018,130]}
+{"kind":"textbox","id":"sh/l0rqd4vm","slide":1,"name":"smooth-scale-role-card","text":"Smooth scale：激活侧平滑\nx' = x / s_smooth\n压缩离群值动态范围，降低A8截断/舍入扰动","textPreview":"Smooth scale：激活侧平滑 | x' = x / s_smooth | 压缩离群值动态范围，降低A8截断/舍入扰动","textChars":58,"textLines":3,"bbox":[338,36,360,58]}
+{"kind":"textbox","id":"sh/wfyxobm5","slide":1,"name":"weight-scale-role-card","text":"Weight scale：权重侧量化网格\nΔw随平滑后权重分布学习更新\n跟踪 W' = W × s_smooth 的动态范围","textPreview":"Weight scale：权重侧量化网格 | Δw随平滑后权重分布学习更新 | 跟踪 W' = W × s_smooth 的动态范围","textChars":62,"textLines":3,"bbox":[338,354,390,64]}
+{"kind":"textbox","id":"sh/7u54zido","slide":1,"name":"dual-scale-core-card","text":"双尺度协同：smooth scale迁移激活异常值，weight scale重配权重量化步长\n前向保持线性层等价，反向通过STE近似梯度联合更新","textPreview":"双尺度协同：smooth scale迁移激活异常值，weight scale重配权重量化步长 | 前向保持线性层等价，反向通过STE近似梯度联合更新","textChars":72,"textLines":2,"bbox":[742,354,376,64]}
+{"kind":"textbox","id":"sh/ed8bat47","slide":1,"name":"activation-branch-tag","text":"激活路径：平滑后再伪量化","textPreview":"激活路径：平滑后再伪量化","textChars":12,"textLines":1,"bbox":[914,94,172,25]}
+{"kind":"textbox","id":"sh/lc7u54zi","slide":1,"name":"weight-branch-tag","text":"权重路径：量化因子可学习更新","textPreview":"权重路径：量化因子可学习更新","textChars":14,"textLines":1,"bbox":[890,333,206,25]}
+{"kind":"shape","id":"sh/wra5gbq1","slide":1,"name":"smooth-card-to-divide-arrow","bbox":[258,110,75,64]}
+{"kind":"shape","id":"sh/36hcrmhk","slide":1,"name":"weight-card-to-scale-arrow","bbox":[396,354,0,-34]}
+{"kind":"shape","id":"sh/eloj2t83","slide":1,"name":"smooth-weight-coupling-arrow","bbox":[224,193,0,88]}
+{"kind":"textbox","id":"sh/pg3ex0nu","slide":1,"name":"coupling-equivalence-label","text":"平滑重参数化\nx'/W'协同补偿","textPreview":"平滑重参数化 | x'/W'协同补偿","textChars":16,"textLines":2,"bbox":[228,207,116,44]}
+{"kind":"shape","id":"sh/obm58z25","slide":1,"name":"activation-smooth-branch-outline","bbox":[92,78,1018,145]}
+{"kind":"shape","id":"sh/hwfyxobm","slide":1,"name":"weight-scale-branch-outline","bbox":[92,232,1018,130]}
+{"kind":"textbox","id":"sh/a9w3m94f","slide":1,"name":"smooth-scale-role-card","text":"Smooth scale：激活侧平滑\nx' = x / s_smooth\n压缩离群值动态范围，降低A8截断/舍入扰动","textPreview":"Smooth scale：激活侧平滑 | x' = x / s_smooth | 压缩离群值动态范围，降低A8截断/舍入扰动","textChars":58,"textLines":3,"bbox":[338,36,360,58]}
+{"kind":"textbox","id":"sh/zupwb2hw","slide":1,"name":"weight-scale-role-card","text":"Weight scale：权重侧量化网格\nΔw随平滑后权重分布学习更新\n跟踪 W' = W × s_smooth 的动态范围","textPreview":"Weight scale：权重侧量化网格 | Δw随平滑后权重分布学习更新 | 跟踪 W' = W × s_smooth 的动态范围","textChars":62,"textLines":3,"bbox":[338,354,390,64]}
+{"kind":"textbox","id":"sh/nyd0z610","slide":1,"name":"dual-scale-core-card","text":"双尺度协同：smooth scale迁移激活异常值，weight scale重配权重量化步长\n前向保持线性层等价，反向通过STE近似梯度联合更新","textPreview":"双尺度协同：smooth scale迁移激活异常值，weight scale重配权重量化步长 | 前向保持线性层等价，反向通过STE近似梯度联合更新","textChars":72,"textLines":2,"bbox":[742,354,376,64]}
+{"kind":"textbox","id":"sh/udg7adsj","slide":1,"name":"activation-branch-tag","text":"激活路径：平滑后再伪量化","textPreview":"激活路径：平滑后再伪量化","textChars":12,"textLines":1,"bbox":[914,94,172,25]}
+{"kind":"textbox","id":"sh/54zidony","slide":1,"name":"weight-branch-tag","text":"权重路径：量化因子可学习更新","textPreview":"权重路径：量化因子可学习更新","textChars":14,"textLines":1,"bbox":[890,333,206,25]}
+{"kind":"shape","id":"sh/cj6tovah","slide":1,"name":"smooth-card-to-divide-arrow","bbox":[216,122,26,34]}
+{"kind":"shape","id":"sh/nap4r65w","slide":1,"name":"weight-card-to-scale-arrow","bbox":[385,323,24,30]}
+{"kind":"shape","id":"sh/upwb2hwf","slide":1,"name":"smooth-weight-coupling-arrow","bbox":[214,198,25,74]}
+{"kind":"textbox","id":"sh/5gbq1ory","slide":1,"name":"coupling-equivalence-label","text":"平滑重参数化\nx'/W'协同补偿","textPreview":"平滑重参数化 | x'/W'协同补偿","textChars":16,"textLines":2,"bbox":[228,207,116,44]}
+{"kind":"table","id":"tb/94fu18jq","slide":1,"name":"表格 6","rows":1,"cols":4,"bbox":[126.68,137.38,87.47,17.6]}
+{"kind":"table","id":"tb/2hwfyxob","slide":1,"name":"表格 6","rows":1,"cols":4,"bbox":[126.68,160.06,87.47,17.6]}
+{"kind":"table","id":"tb/r2p8nqxs","slide":1,"name":"表格 6","rows":1,"cols":4,"bbox":[126.68,194.86,87.47,17.6]}
+{"kind":"table","id":"tb/kb6xkf6d","slide":1,"name":"表格 12","rows":4,"cols":1,"bbox":[122.79,259.73,21.87,75.08]}
+{"kind":"table","id":"tb/9w3m94fu","slide":1,"name":"表格 12","rows":4,"cols":1,"bbox":[150.3,259.73,21.87,75.08]}
+{"kind":"table","id":"tb/3m94fu18","slide":1,"name":"表格 12","rows":4,"cols":1,"bbox":[190.77,259.36,21.87,75.08]}
+{"kind":"table","id":"tb/a5gbq1or","slide":1,"name":"表格 12","rows":4,"cols":1,"bbox":[241.71,137.6,21.87,75.08]}
+{"kind":"table","id":"tb/lszqtcj6","slide":1,"name":"表格 12","rows":4,"cols":1,"bbox":[242.54,258.55,21.87,75.08]}
+{"kind":"table","id":"tb/s72x4nap","slide":1,"name":"表格 6","rows":1,"cols":4,"bbox":[1128.78,199.86,87.47,17.6]}
+{"kind":"table","id":"tb/3ylc7u54","slide":1,"name":"表格 6","rows":1,"cols":4,"bbox":[1128.78,222.54,87.47,17.6]}
+{"kind":"table","id":"tb/adsji5sn","slide":1,"name":"表格 6","rows":1,"cols":4,"bbox":[1128.78,257.34,87.47,17.6]}
+{"kind":"notes","id":"nt/2x4nap4r","slide":1,"text":""}

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="150" viewBox="0 0 520 150">
+    <rect width="520" height="150" fill="white"/>
+    <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#333"/></marker></defs>
+    <rect x="20" y="30" width="120" height="44" rx="4" fill="#e9f3ff" stroke="#2f5597" stroke-width="2"/>
+    <text x="80" y="57" font-size="16" text-anchor="middle" font-family="Arial" fill="#111">Weight Scale</text>
+    <rect x="200" y="30" width="120" height="44" rx="4" fill="#fff2cc" stroke="#bf9000" stroke-width="2"/>
+    <text x="260" y="57" font-size="16" text-anchor="middle" font-family="Arial" fill="#111">Smooth Scale</text>
+    <rect x="380" y="30" width="120" height="44" rx="4" fill="#fce4d6" stroke="#c00000" stroke-width="2"/>
+    <text x="440" y="57" font-size="16" text-anchor="middle" font-family="Arial" fill="#111">Bias Calib.</text>
+    <line x1="142" y1="52" x2="195" y2="52" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="322" y1="52" x2="375" y2="52" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="80" y="112" font-size="14" text-anchor="middle" font-family="Arial" fill="#333">量化尺度自适应</text>
+    <text x="260" y="112" font-size="14" text-anchor="middle" font-family="Arial" fill="#333">离群值平滑迁移</text>
+    <text x="440" y="112" font-size="14" text-anchor="middle" font-family="Arial" fill="#333">量化偏差校准</text>
+  </svg>
