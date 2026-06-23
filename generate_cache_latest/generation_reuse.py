@@ -743,7 +743,21 @@ class GenCacheManager:
             return 2
         if key in {"turn_scores", "tool_rewards"}:
             return []
+        if key == "multi_modal_inputs":
+            return {}
         return None
+
+    @staticmethod
+    def _normalize_multi_modal_inputs(non_tensor_batch: dict) -> None:
+        """Keep empty text-only multi-modal entries as dicts so downstream .keys() calls are safe."""
+        if "multi_modal_inputs" not in non_tensor_batch:
+            return
+
+        normalized = np.asarray(non_tensor_batch["multi_modal_inputs"], dtype=object).copy()
+        for i, multi_modal_input in enumerate(normalized):
+            if multi_modal_input is None:
+                normalized[i] = {}
+        non_tensor_batch["multi_modal_inputs"] = normalized
 
     def _rebuild_non_tensor_batch(
         self,
@@ -789,6 +803,7 @@ class GenCacheManager:
                     merged[row] = list(default_value) if isinstance(default_value, list) else default_value
                 non_tensor_batch[key] = merged
 
+        self._normalize_multi_modal_inputs(non_tensor_batch)
         return non_tensor_batch
 
 
