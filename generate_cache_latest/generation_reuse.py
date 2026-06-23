@@ -29,8 +29,10 @@ from verl.protocol import pad_dataproto_to_divisor, unpad_dataproto
 from verl import DataProto
 import numpy as np
 from typing import Dict, Any, List
+from verl.utils import tensordict_utils as tu
 from verl.utils.chat_template import apply_chat_template
 from verl.utils.debug import marked_timer
+from verl.workers.utils.padding import left_right_2_no_padding, no_padding_2_padding
 
 
 def _normalize_prompt_key(prompt: Any) -> str:
@@ -427,6 +429,22 @@ class GenCacheManager:
 
         return torch.stack(rows, dim=0)
 
+    def _compute_reuse_log_probs(self, pre_prob_data: DataProto) -> torch.Tensor:
+        """Compute actor log probs using the latest model-engine TensorDict protocol."""
+        batch_td = pre_prob_data.to_tensordict()
+        batch_td = left_right_2_no_padding(batch_td)
+        tu.assign_non_tensor(
+            batch_td,
+            calculate_entropy=False,
+            calculate_sum_pi_squared=False,
+            compute_loss=False,
+        )
+        output = self.actor_rollout_wg.compute_log_prob(batch_td)
+        log_probs = tu.get(output, "log_probs", default=None)
+        if log_probs is None:
+            log_probs = tu.get(output, "old_log_probs")
+        return no_padding_2_padding(log_probs, batch_td).float()
+
     def reuse_generation(self, 
         gen_batch: DataProto,
         async_rollout_manager: Any,
@@ -486,7 +504,9 @@ class GenCacheManager:
             truncated_pos_ids = truncated_attention_mask.cumsum(dim=1) * truncated_attention_mask - truncated_attention_mask
         
             pre_prob_data = DataProto.from_single_dict({
+                "prompts": prompt_ids,
                 "responses": truncated_responses,
+                "response_mask": truncated_resp_mask,
                 "input_ids": truncated_input_ids,
                 "attention_mask": truncated_attention_mask,
                 "position_ids": truncated_pos_ids
@@ -500,8 +520,7 @@ class GenCacheManager:
             # })
 
             with marked_timer("reuse_compute_logp", timing_raw, color="purple"):
-                pre_log_probs = self.actor_rollout_wg.compute_log_prob(pre_prob_data)
-            new_logp = pre_log_probs.batch['old_log_probs']
+                new_logp = self._compute_reuse_log_probs(pre_prob_data)
 
             if reuse_max_len < full_response_len:
                 pad_len = full_response_len - reuse_max_len
