@@ -429,10 +429,22 @@ class GenCacheManager:
 
         return torch.stack(rows, dim=0)
 
+    def _build_reuse_meta_info(self, gen_batch: DataProto) -> dict:
+        """Carry the metadata required by the current log-prob engine into reuse batches."""
+        meta_info = dict(gen_batch.meta_info)
+        rollout_config = self.trainer_config.actor_rollout_ref.rollout
+        meta_info.setdefault("temperature", rollout_config.temperature)
+        return meta_info
+
     def _compute_reuse_log_probs(self, pre_prob_data: DataProto) -> torch.Tensor:
         """Compute actor log probs using the latest model-engine TensorDict protocol."""
         batch_td = pre_prob_data.to_tensordict()
         batch_td = left_right_2_no_padding(batch_td)
+        if "temperature" not in batch_td.keys():
+            tu.assign_non_tensor(
+                batch_td,
+                temperature=self.trainer_config.actor_rollout_ref.rollout.temperature,
+            )
         tu.assign_non_tensor(
             batch_td,
             calculate_entropy=False,
@@ -510,7 +522,7 @@ class GenCacheManager:
                 "input_ids": truncated_input_ids,
                 "attention_mask": truncated_attention_mask,
                 "position_ids": truncated_pos_ids
-            })
+            }, meta_info=self._build_reuse_meta_info(gen_batch))
 
             # pre_prob_data = DataProto.from_single_dict({
             #     "responses": aligned_old_responses,
