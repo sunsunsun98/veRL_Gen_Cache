@@ -29,6 +29,7 @@ from verl.protocol import pad_dataproto_to_divisor, unpad_dataproto
 from verl import DataProto
 import numpy as np
 from typing import Dict, Any, List
+from verl.utils.chat_template import apply_chat_template
 from verl.utils.debug import marked_timer
 
 
@@ -60,6 +61,18 @@ def _rand_like_compat(t: torch.Tensor, seed: int | None = None):
     except TypeError:
         torch.manual_seed(seed)
         return torch.rand_like(t)
+
+
+def _get_gen_prompt_ids(gen_batch: DataProto) -> torch.Tensor:
+    if gen_batch.batch is None:
+        raise ValueError(
+            "gen_batch.batch is None. Call GenCacheManager._ensure_prompt_batch() before aligning cached rollouts."
+        )
+    if "input_ids" in gen_batch.batch:
+        return gen_batch.batch["input_ids"]
+    if "prompts" in gen_batch.batch:
+        return gen_batch.batch["prompts"]
+    raise KeyError(f"Cannot find prompt ids in gen_batch.batch keys: {list(gen_batch.batch.keys())}")
 
 
 @torch.no_grad()
@@ -199,13 +212,13 @@ def align_prev_to_gen(
     将哈希缓存中的数据，严格按 batch 行号对齐，并补全未命中的行为 dummy。
     核心原则：未命中的行必须保留真实的 Prompt 信息，仅将历史复用信息置空。
     """
-    batch_size = len(gen_batch.batch["input_ids"])
+    prompt_src = _get_gen_prompt_ids(gen_batch)
+    batch_size = prompt_src.shape[0]
 
     # 1. 获取一个样本的 shape，用于创建 dummy tensor 的形状
     first_hit_idx = list(cached_tensors.keys())[0]
     sample = cached_tensors[first_hit_idx]
 
-    prompt_src = gen_batch.batch["input_ids"]
     log_probs = torch.zeros(
         (batch_size, *sample["old_logps"].shape),
         dtype=sample["old_logps"].dtype,
@@ -340,6 +353,7 @@ class GenCacheManager:
         self.num_workers = trainer_config.actor_rollout_ref.rollout.agent.num_workers
 
         # 外部组件
+        self.trainer_config = trainer_config
         self.actor_rollout_wg = actor_rollout_wg
         self.tokenizer = tokenizer
         if self.tokenizer.pad_token_id is None:
@@ -361,6 +375,57 @@ class GenCacheManager:
         # 确保目录存在（如果需要落盘）
         os.makedirs(self.save_path, exist_ok=True)
 
+    def _ensure_prompt_batch(self, gen_batch: DataProto) -> DataProto:
+        """Materialize prompt ids for cache alignment when upstream gen_batch has no tensor batch."""
+        if gen_batch.batch is not None and ("input_ids" in gen_batch.batch or "prompts" in gen_batch.batch):
+            return gen_batch
+
+        if "raw_prompt" not in gen_batch.non_tensor_batch:
+            raise KeyError("raw_prompt is required to rebuild prompt ids for generate_cache reuse.")
+
+        prompt_ids = self._build_prompt_ids_from_raw_prompt(gen_batch.non_tensor_batch["raw_prompt"])
+        prompt_dp = DataProto.from_single_dict({"input_ids": prompt_ids})
+        prompt_dp.non_tensor_batch = {
+            key: np.array(value, copy=True) for key, value in gen_batch.non_tensor_batch.items()
+        }
+        prompt_dp.meta_info = dict(gen_batch.meta_info)
+        return prompt_dp
+
+    def _build_prompt_ids_from_raw_prompt(self, raw_prompts) -> torch.Tensor:
+        max_prompt_length = int(self.trainer_config.actor_rollout_ref.rollout.prompt_length)
+        apply_chat_template_kwargs = self.trainer_config.data.get("apply_chat_template_kwargs", {})
+
+        rows = []
+        for raw_prompt in raw_prompts:
+            messages = raw_prompt.tolist() if isinstance(raw_prompt, np.ndarray) else raw_prompt
+            if isinstance(messages, dict):
+                messages = [messages]
+
+            if isinstance(messages, (list, tuple)):
+                token_ids = apply_chat_template(
+                    self.tokenizer,
+                    list(messages),
+                    add_generation_prompt=True,
+                    tokenize=True,
+                    **apply_chat_template_kwargs,
+                )
+            else:
+                token_ids = self.tokenizer(str(messages), add_special_tokens=False)["input_ids"]
+
+            if hasattr(token_ids, "tolist"):
+                token_ids = token_ids.tolist()
+            if token_ids and isinstance(token_ids[0], list):
+                token_ids = token_ids[0]
+            if len(token_ids) > max_prompt_length:
+                token_ids = token_ids[-max_prompt_length:]
+
+            padded = torch.full((max_prompt_length,), self.pad_token_id, dtype=torch.long)
+            if token_ids:
+                token_tensor = torch.tensor(token_ids, dtype=torch.long)
+                padded[-len(token_ids):] = token_tensor
+            rows.append(padded)
+
+        return torch.stack(rows, dim=0)
 
     def reuse_generation(self, 
         gen_batch: DataProto,
@@ -389,6 +454,7 @@ class GenCacheManager:
                 result.have_pre_rollouts = False
                 return result
             
+            gen_batch = self._ensure_prompt_batch(gen_batch)
             result.have_pre_rollouts = True
             result.source_non_tensor_batch = {
                 key: np.array(value, copy=True) for key, value in gen_batch.non_tensor_batch.items()
