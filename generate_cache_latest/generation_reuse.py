@@ -33,6 +33,7 @@ from verl.utils import tensordict_utils as tu
 from verl.utils.chat_template import apply_chat_template
 from verl.utils.debug import marked_timer
 from verl.workers.utils.padding import left_right_2_no_padding, no_padding_2_padding
+from verl.trainer.ppo.utils import need_reward_model
 
 
 def _normalize_prompt_key(prompt: Any) -> str:
@@ -226,6 +227,13 @@ def align_prev_to_gen(
         dtype=sample["old_logps"].dtype,
         device=sample["old_logps"].device,
     )
+    rm_scores = None
+    if "rm_scores" in sample:
+        rm_scores = torch.zeros(
+            (batch_size, *sample["rm_scores"].shape),
+            dtype=sample["rm_scores"].dtype,
+            device=sample["rm_scores"].device,
+        )
     responses = torch.full(
         (batch_size, *sample["response_ids"].shape),
         pad_token_id,
@@ -238,6 +246,8 @@ def align_prev_to_gen(
         responses[idx].copy_(data["response_ids"])
         prompts[idx].copy_(data["input_ids"])
         log_probs[idx].copy_(data["old_logps"])
+        if rm_scores is not None and "rm_scores" in data:
+            rm_scores[idx].copy_(data["rm_scores"])
 
     resp_mask = (responses != pad_token_id).long()
     combined_ids = torch.cat([prompts, responses], dim=-1)
@@ -247,7 +257,7 @@ def align_prev_to_gen(
     prompt_pos_ids = prompt_attn_mask.cumsum(dim=1) * prompt_attn_mask - prompt_attn_mask
     cat_attention_mask = torch.cat([prompt_attn_mask, resp_mask], dim=1)
 
-    return {
+    aligned = {
         "log_probs": log_probs,
         "response_masks": resp_mask,
         "prompts": prompts,
@@ -258,6 +268,9 @@ def align_prev_to_gen(
         "cat_attention_mask": cat_attention_mask,
         "cat_input_ids": combined_ids,
     }
+    if rm_scores is not None:
+        aligned["rm_scores"] = rm_scores
+    return aligned
     """
     
 
@@ -327,6 +340,7 @@ class ReuseRolloutResult:
         "prompt_pos_ids",
         "aligned_old_responses",
         "aligned_old_response_mask",
+        "aligned_old_rm_scores",
         "cut_idx",
         "idx_reuse",
         "idx_need",
@@ -353,6 +367,10 @@ class GenCacheManager:
             "reuse_max_len", trainer_config.actor_rollout_ref.rollout.response_length
         )
         self.num_workers = trainer_config.actor_rollout_ref.rollout.agent.num_workers
+        self.use_rm = need_reward_model(trainer_config)
+        self.expect_rollout_rm_scores = (
+            not self.use_rm or trainer_config.reward.reward_model.get("enable_resource_pool", False)
+        )
 
         # 外部组件
         self.trainer_config = trainer_config
@@ -376,6 +394,11 @@ class GenCacheManager:
         )
         # 确保目录存在（如果需要落盘）
         os.makedirs(self.save_path, exist_ok=True)
+
+    def _cache_has_required_fields(self, cached_tensors: Dict[int, Dict[str, torch.Tensor]]) -> bool:
+        if not self.expect_rollout_rm_scores:
+            return True
+        return all("rm_scores" in data for data in cached_tensors.values())
 
     def _ensure_prompt_batch(self, gen_batch: DataProto) -> DataProto:
         """Materialize prompt ids for cache alignment when upstream gen_batch has no tensor batch."""
@@ -483,6 +506,9 @@ class GenCacheManager:
             if not cached_tensors:
                 result.have_pre_rollouts = False
                 return result
+            if not self._cache_has_required_fields(cached_tensors):
+                result.have_pre_rollouts = False
+                return result
             
             gen_batch = self._ensure_prompt_batch(gen_batch)
             result.have_pre_rollouts = True
@@ -498,6 +524,7 @@ class GenCacheManager:
 
             aligned_old_logp = aligned["log_probs"]
             aligned_old_response_mask = aligned['response_masks']
+            aligned_old_rm_scores = aligned.get("rm_scores")
             prompt_ids = aligned["prompts"]
             aligned_old_responses = aligned["responses"]
             aligned_position_ids = aligned["position_ids"]
@@ -605,6 +632,7 @@ class GenCacheManager:
         result.prompt_pos_ids = prompt_pos_ids
         result.aligned_old_responses = aligned_old_responses
         result.aligned_old_response_mask = aligned_old_response_mask
+        result.aligned_old_rm_scores = aligned_old_rm_scores
         result.cut_idx = cut_idx
         result.idx_reuse = idx_reuse
         result.idx_need = idx_need
@@ -634,6 +662,7 @@ class GenCacheManager:
             prompt_pos_ids = pre_result.prompt_pos_ids
             aligned_old_responses = pre_result.aligned_old_responses
             aligned_old_response_mask = pre_result.aligned_old_response_mask
+            aligned_old_rm_scores = pre_result.aligned_old_rm_scores
             cut_idx = pre_result.cut_idx
             idx_reuse = pre_result.idx_reuse
             idx_need = pre_result.idx_need
@@ -719,6 +748,30 @@ class GenCacheManager:
                 "attention_mask": final_attn,  # [B,P+R]
                 "position_ids": final_pos,  # [B,P+R]
             }
+            if aligned_old_rm_scores is not None or (
+                idx_need.numel() > 0 and gen_batch_output is not None and "rm_scores" in gen_batch_output.batch
+            ):
+                rm_template = aligned_old_rm_scores
+                if rm_template is None:
+                    rm_template = gen_batch_output.batch["rm_scores"]
+                final_rm_scores = torch.zeros((B, R), dtype=rm_template.dtype, device=final_resp.device)
+
+                if aligned_old_rm_scores is not None and idx_reuse.numel() > 0:
+                    cached_rm_scores = aligned_old_rm_scores.to(device=final_rm_scores.device)
+                    copy_len = min(R, cached_rm_scores.shape[1])
+                    final_rm_scores[idx_reuse, :copy_len] = cached_rm_scores[idx_reuse, :copy_len]
+
+                if idx_need.numel() > 0 and gen_batch_output is not None and "rm_scores" in gen_batch_output.batch:
+                    continued_rm_scores = gen_batch_output.batch["rm_scores"].to(device=final_rm_scores.device)
+                    for row_in_sub, i in enumerate(idx_need.tolist()):
+                        k = int(cut_idx[i])
+                        keep_pref = min(k, R)
+                        take_new = R - keep_pref
+                        copy_len = min(take_new, continued_rm_scores.shape[1])
+                        if copy_len > 0:
+                            final_rm_scores[i, keep_pref:keep_pref + copy_len] = continued_rm_scores[row_in_sub, :copy_len]
+
+                merged["rm_scores"] = final_rm_scores
 
             gen_batch_output = DataProto.from_single_dict(merged)
             gen_batch_output.non_tensor_batch = self._rebuild_non_tensor_batch(
@@ -918,6 +971,7 @@ class HashFileCache:
         responses: torch.Tensor,
         input_ids: torch.Tensor,
         old_logps: torch.Tensor,
+        rm_scores: Optional[torch.Tensor] = None,
         n_repeat: int = 1,  # 新增参数
     ) -> bool:
         if len(prompts) == 0:
@@ -931,6 +985,8 @@ class HashFileCache:
             "old_logps": old_logps.detach(),
             "n_repeat": n_repeat,
         }
+        if rm_scores is not None:
+            item["rm_scores"] = rm_scores.detach()
         try:
             if self.drop_when_full:
                 self._queue.put_nowait(item)
@@ -956,6 +1012,9 @@ class HashFileCache:
             responses = item["responses"].to("cpu", non_blocking=True)
             input_ids = item["input_ids"].to("cpu", non_blocking=True)
             old_logps = item["old_logps"].to("cpu", non_blocking=True)
+            rm_scores = item.get("rm_scores")
+            if rm_scores is not None:
+                rm_scores = rm_scores.to("cpu", non_blocking=True)
             n_repeat = item["n_repeat"]
             
             batch_size = len(prompts)
@@ -977,6 +1036,8 @@ class HashFileCache:
                         "input_ids": input_ids[idx],
                         "old_logps": old_logps[idx],
                     })
+                    if rm_scores is not None:
+                        grouped_data_list[-1]["rm_scores"] = rm_scores[idx]
 
                 h = self._hash(prompt_str)
                 pt_path = self._get_path(h)
