@@ -757,21 +757,26 @@ class GenCacheManager:
             for key, value in getattr(pre_result, "source_non_tensor_batch", {}).items()
         }
         internal_keys = {"per_request_max_new_tokens", "prefix_reuse_prompt_ids"}
+        source_owned_keys = {"raw_prompt", "data_source", "reward_model", "extra_info", "uid"}
         idx_need_np = pre_result.idx_need.detach().cpu().numpy()
 
         for key, value in need_output_non_tensor.items():
             if key in internal_keys:
                 continue
-            if key in non_tensor_batch:
+            if key in source_owned_keys and key in non_tensor_batch:
                 # Original sample metadata such as raw_prompt/reward_model/uid
                 # is already aligned to the full pre-reuse batch.
                 continue
 
             value = np.asarray(value, dtype=object)
-            merged = np.empty(batch_size, dtype=object)
-            default_value = self._default_non_tensor_value(key)
-            for row in range(batch_size):
-                merged[row] = list(default_value) if isinstance(default_value, list) else default_value
+            if key in non_tensor_batch and len(non_tensor_batch[key]) == batch_size:
+                merged = np.asarray(non_tensor_batch[key], dtype=object).copy()
+            else:
+                merged = np.empty(batch_size, dtype=object)
+                default_value = self._default_non_tensor_value(key)
+                for row in range(batch_size):
+                    merged[row] = list(default_value) if isinstance(default_value, list) else default_value
+
             for row_in_sub, original_idx in enumerate(idx_need_np):
                 merged[int(original_idx)] = value[row_in_sub]
             non_tensor_batch[key] = merged
