@@ -33,7 +33,6 @@ from verl.utils import tensordict_utils as tu
 from verl.utils.chat_template import apply_chat_template
 from verl.utils.debug import marked_timer
 from verl.workers.utils.padding import left_right_2_no_padding, no_padding_2_padding
-from verl.trainer.ppo.utils import need_reward_model
 
 
 def _normalize_prompt_key(prompt: Any) -> str:
@@ -367,10 +366,6 @@ class GenCacheManager:
             "reuse_max_len", trainer_config.actor_rollout_ref.rollout.response_length
         )
         self.num_workers = trainer_config.actor_rollout_ref.rollout.agent.num_workers
-        self.use_rm = need_reward_model(trainer_config)
-        self.expect_rollout_rm_scores = (
-            not self.use_rm or trainer_config.reward.reward_model.get("enable_resource_pool", False)
-        )
 
         # 外部组件
         self.trainer_config = trainer_config
@@ -394,11 +389,6 @@ class GenCacheManager:
         )
         # 确保目录存在（如果需要落盘）
         os.makedirs(self.save_path, exist_ok=True)
-
-    def _cache_has_required_fields(self, cached_tensors: Dict[int, Dict[str, torch.Tensor]]) -> bool:
-        if not self.expect_rollout_rm_scores:
-            return True
-        return all("rm_scores" in data for data in cached_tensors.values())
 
     def _ensure_prompt_batch(self, gen_batch: DataProto) -> DataProto:
         """Materialize prompt ids for cache alignment when upstream gen_batch has no tensor batch."""
@@ -506,9 +496,6 @@ class GenCacheManager:
             if not cached_tensors:
                 result.have_pre_rollouts = False
                 return result
-            if not self._cache_has_required_fields(cached_tensors):
-                result.have_pre_rollouts = False
-                return result
             
             gen_batch = self._ensure_prompt_batch(gen_batch)
             result.have_pre_rollouts = True
@@ -583,8 +570,15 @@ class GenCacheManager:
                 )
 
             cut_idx = out["cut_idx"]  # [B]
-            idx_reuse = out["idx_reuse"]  # [Nr]
-            idx_need = out["idx_need"]  # [Nn]
+            original_idx_reuse = out["idx_reuse"]  # [Nr]
+            # Even fully accepted rows still go through rollout so agent reward
+            # loop can produce rm_scores and reward extras on the normal path.
+            idx_reuse = original_idx_reuse.new_empty((0,))
+            idx_need = torch.arange(cut_idx.shape[0], device=cut_idx.device, dtype=cut_idx.dtype)
+            out["metrics"]["prefix/original_skip_ratio"] = out["metrics"].get("prefix/skip_ratio", 0.0)
+            out["metrics"]["prefix/original_cont_ratio"] = out["metrics"].get("prefix/cont_ratio", 0.0)
+            out["metrics"]["prefix/skip_ratio"] = 0.0
+            out["metrics"]["prefix/cont_ratio"] = 1.0
 
             ctx_ids, ctx_msk, ctx_pos = build_ctx(
                 prompt_ids[idx_need],
@@ -770,6 +764,11 @@ class GenCacheManager:
                         copy_len = min(take_new, continued_rm_scores.shape[1])
                         if copy_len > 0:
                             final_rm_scores[i, keep_pref:keep_pref + copy_len] = continued_rm_scores[row_in_sub, :copy_len]
+                        elif continued_rm_scores.shape[1] > 0:
+                            reward_score = continued_rm_scores[row_in_sub].sum()
+                            valid_len = int(aligned_old_response_mask[i].sum().item())
+                            target_pos = max(0, min(valid_len - 1, R - 1))
+                            final_rm_scores[i, target_pos] = reward_score
 
                 merged["rm_scores"] = final_rm_scores
 
